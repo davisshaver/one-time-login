@@ -21,10 +21,6 @@ function one_time_login_enqueue() {
 		'one-time-login-js',
 		plugin_dir_url( __FILE__ ) . 'login.js'
 	);
-	wp_register_style(
-		'one-time-login-css',
-		plugin_dir_url( __FILE__ ) . 'login.css'
-	);
 	wp_localize_script(
 		'one-time-login-js',
 		'oneTimeLogin',
@@ -36,13 +32,20 @@ function one_time_login_enqueue() {
 	wp_enqueue_script(
 		'one-time-login-js'
 	);
-
-	wp_enqueue_style(
-		'one-time-login-css'
-	);
 }
 
 add_action( 'wp_enqueue_scripts', 'one_time_login_enqueue' );
+
+/**
+ * Print custom CSS for one time login.
+ */
+function one_time_login_wp_head() {
+	echo '<style>
+		.one-time-login-form { display: flex; justify-content: space-between; }
+		.one-time-login-form label { display: none; }
+	</style>';
+}
+add_action( 'wp_head', 'one_time_login_wp_head' );
 
 /**
  * Print simple form template form one time login.
