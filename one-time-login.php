@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:     One Time Login
+ * Plugin Name:     One Time Login Fork
  * Plugin URI:      https://wordpress.org/plugins/one-time-login/
  * Description:     Use WP-CLI to generate a one-time login URL for any user.
  * Author:          Daniel Bachhuber
