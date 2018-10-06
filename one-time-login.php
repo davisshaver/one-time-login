@@ -17,6 +17,9 @@
  * Enqueue and localize scripts for form handler.
  */
 function one_time_login_enqueue() {
+	if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
+		return;
+	}
 	wp_register_script(
 		'one-time-login-js',
 		plugin_dir_url( __FILE__ ) . 'login.js'
@@ -40,10 +43,16 @@ add_action( 'wp_enqueue_scripts', 'one_time_login_enqueue' );
  * Print custom CSS for one time login.
  */
 function one_time_login_wp_head() {
-	echo '<style>
+	if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
+		echo '<style>
+			.one-time-login-form input { width: 100%; }
+		</style>';
+	} else {
+		echo '<style>
 		.one-time-login-form { display: flex; justify-content: space-between; }
 		.one-time-login-form label { display: none; }
-	</style>';
+		</style>';
+	}
 }
 add_action( 'wp_head', 'one_time_login_wp_head' );
 
@@ -61,6 +70,29 @@ function one_time_login_form() {
 		);
 	}
 	$input_id = 'one-time-login-form-' . rand();
+	if ( function_exists( 'is_amp_endpoint' ) && is_amp_endpoint() ) {
+		return sprintf(
+			'<form
+				name="submit"
+				class="one-time-login-form hide-inputs"
+				method="post"
+				action-xhr="%s"
+				target="_top">
+				<div class="one-time-login-inputs">
+					<input type="email" name="email" placeholder="email@domain.com" required>
+					<input name="action" type="hidden" value="send_one_time_login_email">
+					<input name="security" type="hidden" value="%s">
+					<input type="submit" value="%s">
+				</div>
+				<div submit-success>
+					<template type="amp-mustache">{{data}}</template>
+				</div>
+			</form>',
+			esc_url( admin_url( 'admin-ajax.php' ) ),
+			esc_attr( wp_create_nonce( 'one-time-login-nonce' ) ),
+			__( 'Send Login Link', 'one-time-login' )
+		);
+	}
 	return sprintf(
 		'<form class="one-time-login-form"><div class="one-time-login-response" style="display: none;">%s</div><label for="%s">%s</label><input id="%s" name="email" placeholder="%s" type="email" required /><input type="submit" value="%s" /> </form>',
 		esc_html( __( 'If an account exists with that address, a login link has been sent.', 'one-time-login' ) ),
@@ -92,8 +124,8 @@ function callback_send_one_time_login_by_email() {
 	wp_send_json_success( __( 'Login link sent if email is registered.', 'one-time-login' ) );
 }
 
-add_action( 'wp_ajax_send_email', 'callback_send_one_time_login_by_email' );
-add_action( 'wp_ajax_nopriv_send_email', 'callback_send_one_time_login_by_email' );
+add_action( 'wp_ajax_send_one_time_login_email', 'callback_send_one_time_login_by_email' );
+add_action( 'wp_ajax_nopriv_send_one_time_login_email', 'callback_send_one_time_login_by_email' );
 
 /**
  * Send a one time login based on a email.
