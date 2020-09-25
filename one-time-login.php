@@ -317,7 +317,11 @@ function one_time_login_handle_token() {
 	do_action( 'one_time_login_logged_in', $user );
 	update_user_meta( $user->ID, 'one_time_login_token', $tokens );
 	wp_set_auth_cookie( $user->ID, true, is_ssl() );
-	wp_safe_redirect( admin_url() );
+	if ( isset( $_GET['redirect_to'] ) ) {
+		wp_safe_redirect( $_GET['redirect_to'] );
+	} else {
+		wp_safe_redirect( admin_url() );
+	}
 	exit;
 }
 add_action( 'init', 'one_time_login_handle_token' );
