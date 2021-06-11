@@ -136,14 +136,14 @@ add_action( 'wp_ajax_nopriv_send_one_time_login_email', 'callback_send_one_time_
  * @param string $email Email address for the user.
  */
 function send_one_time_login_by_email( $email ) {
-	$login_url = one_time_login_by_email( $email, true );
-	if ( ! $login_url ) {
+	$login_data = one_time_login_by_email( $email, true );
+	if ( false === $login_data ) {
 		return;
 	}
 	wp_mail(
 		$email,
-		'Login',
-		$login_url
+		apply_filters( 'one_time_login_subject', 'Login', $email, $login_data['user'] ),
+		apply_filters( 'one_time_login_message', $login_data['url'], $email, $login_data['user'] )
 	);
 }
 
@@ -174,7 +174,10 @@ function one_time_login_by_email( $email, $delay_delete ) {
 		'one_time_login_token' => $token,
 	);
 	$login_url = add_query_arg( $query_args, wp_login_url() );
-	return $login_url;
+	return [
+		'url'  => $login_url,
+		'user' => $user,
+	];
 }
 
 /**
