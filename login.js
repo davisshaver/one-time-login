@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     method: 'POST',
                     credentials: 'same-origin',
                     headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded'}),
-                    body: `action=send_one_time_login_email&security=${window.oneTimeLogin.security}&email=${event.target.elements.email.value}`,
+                    body: `action=send_one_time_login_email&security=${window.oneTimeLogin.security}&email=${encodeURIComponent(event.target.elements.email.value)}`,
                 }
             )
             .then((resp) => resp.json())
