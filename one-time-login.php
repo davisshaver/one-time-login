@@ -418,7 +418,6 @@ function one_time_login_handle_token() {
 	} else {
 		one_time_login_safe_redirect( admin_url() );
 	}
-	exit;
 }
 
 add_action( 'init', 'one_time_login_handle_token' );
