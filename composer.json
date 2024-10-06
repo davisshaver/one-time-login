@@ -1,5 +1,40 @@
 {
-  "name": "davisshaver/one-time-login-fork",
-  "description": "Composer wrapper for plugin",
-  "type": "wordpress-plugin"
+	"name": "davisshaver/one-time-login-fork",
+	"description": "Composer wrapper for plugin",
+	"type": "wordpress-plugin",
+	"repositories": [
+		{
+			"type": "composer",
+			"url": "https://wpackagist.org"
+		}
+	],
+	"require-dev": {
+		"wp-cli/dist-archive-command": "^2.0",
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.4.3 || ^0.5 || ^0.6.2 || ^0.7.1 || ^1.0.0",
+		"wp-coding-standards/wpcs": "^3.0",
+		"sirbrillig/phpcs-variable-analysis": "^2.5",
+		"phpcompatibility/phpcompatibility-wp": "^2.0",
+		"phpunit/phpunit": "^8",
+		"yoast/phpunit-polyfills": "^2.0"
+	},
+	"extra": {
+		"installer-paths": {
+			"vendor/{$name}/": [
+				"type:wordpress-plugin"
+			]
+		}
+	},
+	"scripts": {
+		"phpcs": "vendor/bin/phpcs",
+		"phpcbf": "vendor/bin/phpcbf",
+		"phpunit": "vendor/bin/phpunit"
+	},
+	"config": {
+		"allow-plugins": {
+			"dealerdirect/phpcodesniffer-composer-installer": true
+		},
+		"platform": {
+			"php": "7.4"
+		}
+	}
 }
